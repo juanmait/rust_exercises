@@ -1,7 +1,6 @@
 /// - https://youtu.be/CI60af3hhS8
 /// - https://en.wikipedia.org/wiki/Binary_heap
 /// - https://leetcode.com/problems/k-closest-points-to-origin/
-/// - https://doc.rust-lang.org/stable/std/collections/struct.BinaryHeap.html
 ///
 /// Types Of Binary Tree:
 /// - https://en.wikipedia.org/wiki/Binary_tree#Types_of_binary_trees
@@ -16,33 +15,11 @@
 /// - left node: 2i + 1
 /// - right node: 2i + 2
 
-#[derive(PartialEq)]
-struct Point {
-    distance: f32, // euclidean distance
-    point: Vec<i32>,
+pub struct Heap {
+    heap: Vec<i32>,
 }
 
-impl PartialOrd for Point {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        self.distance.partial_cmp(&other.distance)
-    }
-}
-
-impl Ord for Point {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.distance.partial_cmp(&other.distance).unwrap()
-    }
-}
-
-impl Eq for Point {
-    // fn assert_receiver_is_total_eq(&self) {}
-}
-
-pub struct Heap<T: Ord> {
-    heap: Vec<T>,
-}
-
-impl<T: Ord> Heap<T> {
+impl Heap {
     pub fn new() -> Self {
         Self { heap: vec![] }
     }
@@ -51,7 +28,7 @@ impl<T: Ord> Heap<T> {
     ///     1. Add the element to the bottom level of the heap at the leftmost open space.
     ///     2. Compare the added element with its parent; if they are in the correct order, stop.
     ///     3. If not, swap the element with its parent and return to the previous step.
-    pub fn push(&mut self, val: T) {
+    pub fn push(&mut self, val: i32) {
         self.heap.push(val);
         self.bubble_up();
     }
@@ -67,7 +44,7 @@ impl<T: Ord> Heap<T> {
     /// 3. If not, swap the element with one of its children and return to the previous step.
     ///    IMPORTANT: Swap with its smaller child in a min-heap and its larger child in a
     ///    max-heap.
-    pub fn pop(&mut self) -> Option<T> {
+    pub fn pop(&mut self) -> Option<i32> {
         let len = self.heap.len();
 
         if len == 1 {
@@ -96,9 +73,9 @@ impl<T: Ord> Heap<T> {
         let mut i = self.heap.len() - 1;
 
         while i > 0 {
-            let node = &self.heap[i];
+            let node = self.heap[i];
             let parent_index = (i - 1) / 2; // this is the oposite to find the children of a node
-            let parent_node = &self.heap[parent_index];
+            let parent_node = self.heap[parent_index];
 
             if parent_node >= node {
                 break;
@@ -130,28 +107,6 @@ impl<T: Ord> Heap<T> {
     }
 }
 
-fn k_nearest(points: Vec<Vec<i32>>, k: i32) -> Vec<Vec<i32>> {
-    let mut heap = Heap::new();
-
-    for point in points {
-        let distance: i32 = point.iter().map(|p| p.pow(2)).sum();
-        let distance: f32 = (distance as f32).sqrt();
-        heap.push(core::cmp::Reverse(Point { distance, point }))
-    }
-
-    let mut results = Vec::new();
-
-    for _ in 0..k {
-        if let Some(core::cmp::Reverse(v)) = heap.pop() {
-            results.push(v.point);
-        } else {
-            break;
-        }
-    }
-
-    results
-}
-
 fn main() {}
 
 #[cfg(test)]
@@ -159,32 +114,43 @@ mod test {
     // Run the tests:
     //
     // ```
-    // cargo watch -q -c -w examples/ -x 'test --example k_nearest_point'
+    // cargo watch -q -c -w examples/ -x 'test --example binary_heap'
     // ```
 
     #[test]
-    fn works_with_empty_points() {
-        assert_eq!(super::k_nearest(vec![], 3).len(), 0);
+    fn usize_round() {
+        // the results of this operation shows the "binary"
+        // nature of the algorithm
+        assert_eq!(0 as usize / 2, 0);
+        assert_eq!(1 as usize / 2, 0);
+        assert_eq!(2 as usize / 2, 1);
+        assert_eq!(3 as usize / 2, 1);
+        assert_eq!(4 as usize / 2, 2);
+        assert_eq!(5 as usize / 2, 2);
+        assert_eq!(6 as usize / 2, 3);
+        assert_eq!(7 as usize / 2, 3);
+        assert_eq!(8 as usize / 2, 4);
+        assert_eq!(9 as usize / 2, 4);
+        assert_eq!(10 as usize / 2, 5);
+        assert_eq!(11 as usize / 2, 5);
+        assert_eq!(12 as usize / 2, 6);
     }
 
     #[test]
-    fn works_with_bad_k() {
-        assert_eq!(
-            super::k_nearest(vec![vec![3, 9], vec![2, 2], vec![1, 1]], -4).len(),
-            0
-        );
-    }
+    fn works_with_heap() {
+        let mut h = super::Heap::new();
 
-    #[test]
-    fn works_with_one_point() {
-        assert_eq!(super::k_nearest(vec![vec![0, 0]], 3), vec![vec![0, 0]]);
-    }
+        h.push(9);
+        h.push(20);
+        h.push(3);
+        h.push(4);
+        h.push(40);
+        h.push(0);
+        h.push(97);
 
-    #[test]
-    fn works_with_top_k_points() {
-        assert_eq!(
-            super::k_nearest(vec![vec![3, 9], vec![2, 2], vec![1, 1]], 2),
-            vec![vec![1, 1], vec![2, 2]],
-        );
+        assert_eq!(h.pop(), Some(97));
+        assert_eq!(h.pop(), Some(40));
+        assert_eq!(h.pop(), Some(20));
+        assert_eq!(h.pop(), Some(9));
     }
 }
