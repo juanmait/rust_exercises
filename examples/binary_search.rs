@@ -1,7 +1,7 @@
 /// Would this only work against an array of unique ordered values?
 /// In a scenario where the array is ordered but items are not unique
-/// when a key is found we can't guarantee that is the first (or last)
-/// occurrence of it.
+/// when a key is found we can't guarantee that is the first, last, or
+/// mid occurrence of it.
 fn find(arr: &[i32], key: i32) -> Option<usize> {
     if arr.len() == 0 {
         return None;
@@ -117,15 +117,16 @@ struct Vehicle {
 }
 
 fn test_with_generic() {
+    println!("Testing 'test_with_generic'...");
     let mut vehicles: Vec<Vehicle> = vec![
         Vehicle {
-            id: 0,
-            make: "Chevrolette".to_string(),
-            model: "coco".to_string(),
+            id: 1,
+            make: "Chevrolet".to_string(),
+            model: "Malibu".to_string(),
             price: 123,
         },
         Vehicle {
-            id: 3,
+            id: 2,
             make: "ford".to_string(),
             model: "ranger".to_string(),
             price: 1234,
@@ -140,7 +141,7 @@ fn test_with_generic() {
         Vehicle {
             id: 4,
             make: "ford".to_string(),
-            model: "ranger".to_string(),
+            model: "T".to_string(),
             price: 12345,
         },
     ];
@@ -172,6 +173,15 @@ fn test_with_generic() {
     assert_eq!(result2, None);
 }
 
+// Run the tests:
+//
+// ```sh
+// # Run it
+// cargo run --example binary_search
+//
+// # Watch it
+// cargo watch -q -c -w examples/ -x 'run --example binary_search'
+// ```
 fn main() {
     test_regular_find();
     test_using_match();
