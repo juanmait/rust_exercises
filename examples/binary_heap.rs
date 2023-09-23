@@ -113,7 +113,11 @@ fn main() {}
 mod test {
     // Run the tests:
     //
-    // ```
+    // ```bash
+    // # Test all
+    // cargo test --example binary_heap
+    // 
+    // # Test while watch
     // cargo watch -q -c -w examples/ -x 'test --example binary_heap'
     // ```
 

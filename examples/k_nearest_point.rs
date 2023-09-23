@@ -158,7 +158,11 @@ fn main() {}
 mod test {
     // Run the tests:
     //
-    // ```
+    // ```bash
+    // # Run the tests
+    // cargo test --example k_nearest_point
+    //
+    // # Test & Watch
     // cargo watch -q -c -w examples/ -x 'test --example k_nearest_point'
     // ```
 
